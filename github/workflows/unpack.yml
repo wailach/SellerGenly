@@ -1,0 +1,30 @@
+name: Unpack SellerGenly
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Unpack SellerGenly
+        run: |
+          mkdir -p /tmp/sellergenly
+          unzip -q SellerGenly_v3_Real_SaaS.zip -d /tmp/sellergenly
+          cp -R /tmp/sellergenly/. .
+          rm -f SellerGenly_v3_Real_SaaS.zip
+
+      - name: Commit project files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Add SellerGenly SaaS project" || echo "Nothing to commit"
+          git push
