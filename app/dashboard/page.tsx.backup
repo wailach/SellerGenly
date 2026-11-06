@@ -1,0 +1,27 @@
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { signout } from "./signout";
+
+export default async function Dashboard() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const email = String(data?.claims?.email || "seller");
+  return <main className="app-shell">
+    <aside className="sidebar"><div className="brand"><span className="brand-mark">S</span> SellerGenly</div>
+      <nav><Link className="active" href="/dashboard">⌂ Dashboard</Link><Link href="/products">▣ Products</Link><Link href="/calculator">◈ Calculator</Link><Link href="/pricing">★ Upgrade</Link></nav>
+      <form action={signout}><button className="side-signout">Sign out</button></form>
+    </aside>
+    <section className="workspace">
+      <header className="topbar"><div><span className="eyebrow">WORKSPACE</span><h1>Good to see you 👋</h1></div><div className="user-chip">{email}</div></header>
+      <div className="stats"><div className="stat"><span>Saved products</span><strong>0</strong></div><div className="stat"><span>Analyses</span><strong>0</strong></div><div className="stat"><span>Avg. margin</span><strong>—</strong></div><div className="stat"><span>Plan</span><strong>Free</strong></div></div>
+      <div className="dash-grid">
+        <div className="panel"><div className="panel-head"><div><span className="eyebrow">QUICK START</span><h2>Make your first product decision</h2></div></div><div className="quick-grid">
+          <Link href="/calculator" className="quick"><b>💰 Profit Calculator</b><span>Calculate real unit economics →</span></Link>
+          <Link href="/products" className="quick"><b>🔎 Product Research</b><span>Build your opportunity list →</span></Link>
+          <Link href="/products?ai=1" className="quick"><b>🤖 AI Analysis</b><span>Evaluate a product idea →</span></Link>
+        </div></div>
+        <div className="panel"><span className="eyebrow">PLAN</span><h2>Free workspace</h2><p>Upgrade when you need higher AI limits, advanced research and more saved products.</p><Link className="btn primary" href="/pricing">View plans</Link></div>
+      </div>
+    </section>
+  </main>;
+}
